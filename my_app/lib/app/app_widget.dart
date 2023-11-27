@@ -9,7 +9,7 @@ class AppWidget extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/home',
-      title: 'Sem titulo ainda',
+      title: 'Movies FMG',
       theme: ThemeData(
         fontFamily: 'Roboto',
         appBarTheme: AppBarTheme(
