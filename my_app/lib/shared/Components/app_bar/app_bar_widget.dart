@@ -4,13 +4,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String titulo;
   final double? toolbarHeight;
   final IconData? icon;
-  final Widget? login;
 
   const AppBarWidget({
     Key? key,
     required this.titulo,
     this.icon,
-    this.login,
     this.toolbarHeight,
   }) : super(key: key);
 
@@ -21,26 +19,23 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon),
+          SizedBox(width: 8), // Espaçamento horizontal entre o ícone e o texto
           Text(
             titulo,
-            style: const TextStyle(fontSize: 36),
+            style: const TextStyle(fontSize: 32),
           ),
         ],
       ),
-      actions: <Widget>[
-        Container(
-          child: login,
-        )
-      ],
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.blue.shade500,
-                Colors.blue.shade900,
-              ]),
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.blue.shade500,
+              Colors.blue.shade700,
+            ],
+          ),
         ),
       ),
     );
