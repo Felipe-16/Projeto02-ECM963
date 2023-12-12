@@ -30,7 +30,6 @@ class AtoresDetailsPage extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(actorDetails['biography']),
-                  // Adicione outros detalhes que deseja exibir
                 ],
               ),
             ),

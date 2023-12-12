@@ -20,11 +20,9 @@ class _AtoresPageState extends State<AtoresPage> {
   }
 
   Future<void> fetchTopActors() async {
-    final apiKey =
-        'b291cbd1c4594544d1906cabdab59e7b'; 
+    final apiKey = 'b291cbd1c4594544d1906cabdab59e7b';
     final response = await http.get(
-      Uri.parse(
-          'https://api.themoviedb.org/3/trending/person/week?api_key=$apiKey'),
+      Uri.parse('https://api.themoviedb.org/3/trending/person/week?api_key=$apiKey'),
     );
 
     if (response.statusCode == 200) {
@@ -37,49 +35,92 @@ class _AtoresPageState extends State<AtoresPage> {
     }
   }
 
+  Future<Map<String, dynamic>> fetchActorDetails(int actorId) async {
+    final apiKey = 'b291cbd1c4594544d1906cabdab59e7b';
+    final response = await http.get(
+      Uri.parse('https://api.themoviedb.org/3/person/$actorId?api_key=$apiKey'),
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to load actor details');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWidget(
-          icon: Icons.person,
-          titulo: 'Trending Actors',
-        ),
-        body: ListView.builder(
-          itemCount: topActors.length,
-          itemBuilder: (context, index) {
-            return _buildActorCard(context, topActors[index]);
-          },
-        ));
+      appBar: AppBarWidget(
+        icon: Icons.person,
+        titulo: 'Trending Actors',
+      ),
+      body: ListView.builder(
+        itemCount: topActors.length,
+        itemBuilder: (context, index) {
+          return _buildActorCard(context, topActors[index]);
+        },
+      ),
+    );
   }
 
   Widget _buildActorCard(BuildContext context, Map<String, dynamic> actor) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return Center(child: CircularProgressIndicator());
+          },
+        );
+        final actorDetails = await fetchActorDetails(actor['id']);
+        Navigator.pop(context); // Fecha o indicador de carregamento
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => AtoresDetailsPage(actorDetails: actor),
+            builder: (context) => AtoresDetailsPage(actorDetails: actorDetails),
           ),
         );
       },
       child: Card(
         margin: EdgeInsets.all(8.0),
-        child: Padding(
-          padding: EdgeInsets.all(12.0),
-          child: ListTile(
-            leading: actor['profile_path'] != null
-                ? Image.network(
-                    'https://image.tmdb.org/t/p/w200${actor['profile_path']}',
-                    height: double.infinity,
-                    fit: BoxFit.fill,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            actor['profile_path'] != null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(4.0),
+                    child: Image.network(
+                      'https://image.tmdb.org/t/p/w500${actor['profile_path']}',
+                      width: 120.0,
+                      height: 180.0,
+                      fit: BoxFit.cover,
+                    ),
                   )
-                : SizedBox(), 
-            title: Text(
-              actor['name'] ?? '',
-              style: TextStyle(fontWeight: FontWeight.bold),
+                : SizedBox(width: 120.0, height: 180.0),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      actor['name'] ?? '',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      actor['known_for_department'] ?? '',
+                      style: TextStyle(fontSize: 14.0),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
             ),
-            subtitle: Text(actor['known_for_department'] ?? ''),
-          ),
+          ],
         ),
       ),
     );

@@ -14,27 +14,33 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> _searchResults = [];
   String _selectedFilter = '';
 
-  Future<void> _searchTMDb(String searchTerm) async {
-    final apiKey =
-        'b291cbd1c4594544d1906cabdab59e7b'; 
+  @override
+  void initState() {
+    super.initState();
+    _searchTMDb(''); 
+  }
 
-    final response = await http.get(
-      Uri.parse(
-          'https://api.themoviedb.org/3/search/multi?api_key=$apiKey&query=$searchTerm'),
-    );
+  Future<void> _searchTMDb(String searchTerm) async {
+    final apiKey = 'b291cbd1c4594544d1906cabdab59e7b'; 
+
+    String url;
+    if (searchTerm.isEmpty) {
+      url = 'https://api.themoviedb.org/3/trending/all/week?api_key=$apiKey';
+    } else {
+      url = 'https://api.themoviedb.org/3/search/multi?api_key=$apiKey&query=$searchTerm';
+    }
+
+    final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final decodedData = jsonDecode(response.body);
       setState(() {
-        _searchResults =
-            List<Map<String, dynamic>>.from(decodedData['results']);
+        _searchResults = List<Map<String, dynamic>>.from(decodedData['results']);
       });
     } else {
       throw Exception('Failed to load search results');
     }
-  }
-
-  Widget _buildFilterButton(String filterName) {
+  }  Widget _buildFilterButton(String filterName) {
     return GestureDetector(
       onTap: () {
         setState(() {

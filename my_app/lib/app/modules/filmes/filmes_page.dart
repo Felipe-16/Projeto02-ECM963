@@ -53,23 +53,50 @@ class _FilmesPageState extends State<FilmesPage> {
   }
 
   Widget _buildMovieCard(Map<String, dynamic> movie) {
-    return Card(
-      margin: EdgeInsets.all(8.0),
-      child: Padding(
-        padding: EdgeInsets.all(12.0),
-        child: ListTile(
-          leading: Image.network(
-            'https://image.tmdb.org/t/p/w200${movie['poster_path']}',
-            height: double.infinity, // Preencher a altura do card
-            fit: BoxFit.fill,
+  return Card(
+    margin: EdgeInsets.all(8.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start, 
+      children: <Widget>[
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4.0), 
+          child: Image.network(
+            'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
+            width: 120.0, 
+            height: 180.0, 
+            fit: BoxFit.cover, 
           ),
-          title: Text(
-            movie['title'],
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: Text(movie['overview']),
         ),
-      ),
-    );
-  }
+        Expanded( 
+          child: Padding(
+            padding: EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start, 
+              children: <Widget>[
+                Text(
+                  movie['title'],
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                  ),
+                ),
+                SizedBox(height: 8.0), 
+                Text(
+                  movie['overview'],
+                  style: TextStyle(
+                    fontSize: 14.0,
+                  ),
+                  maxLines: 3, 
+                  overflow: TextOverflow.ellipsis, 
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+
 }

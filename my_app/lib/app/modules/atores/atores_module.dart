@@ -15,7 +15,7 @@ class AtoresModule extends Module {
     ChildRoute(
       'atores/actor-details', 
       child: (_, args) {
-        final actorDetails = args?.data['actorDetails'] ?? {}; 
+        final actorDetails = args.data['actorDetails'] ?? {}; 
         return AtoresDetailsPage(actorDetails: actorDetails);
       },
     ),
